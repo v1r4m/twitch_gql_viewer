@@ -29,7 +29,7 @@ clientId = match
 
 def sendMail(streamer):
     subject = "Twitch Gql Viewer"
-    body = "Detected"+ config['victim']['id'] +"in : " + streamer
+    body = "Detected "+ config['victim']['id'] +" in : " + streamer
     message = MIMEMultipart()
     message["From"] = sender_email
     message["To"] = receiver_email
@@ -45,20 +45,42 @@ def sendMail(streamer):
         print("email sending error occurred: ", str(e))
 
 def getFollowList(streamerList):
-    victim = config['victim']['id']
-    url = 'https://followholic.pages.dev/api/follow/'+victim+'/?cursor='
+    url = 'https://gql.twitch.tv/gql'
+    headers = {
+            'Client-Id': clientId,
+            'Content-Type': 'application/json'
+        }
+    payload = [
+        {
+            "operationName":"ChannelFollows",
+            "variables":{
+                "limit":20,
+                "order":"DESC",
+                "login": config['victim']['id']
+            },
+            "extensions":{
+                "persistedQuery":{
+                    "version":1,
+                    "sha256Hash":"eecf815273d3d949e5cf0085cc5084cd8a1b5b7b6f7990cf43cb0beadf546907"
+                }
+            }
+        }
+    ]
+
     try:
-        response = requests.get(url)
+        response = requests.post(url, headers=headers, json=payload)
         if response.status_code == 200:
             data = response.json()
-            streamerList = [item['login'] for item in data['channels']]
+            streamerList = [item['node']['login'] for item in data[0]['data']['user']['follows']['edges']]
+            #print(streamerList)
             return streamerList
         else:
             print('api is not okay now')
             return streamerList
-    except:
-        print('buffering List')
+    except Exception as e:
+        print('buffering List'+str(e))
         return streamerList
+
 
 def twitchView(streamerList):
     url = 'https://gql.twitch.tv/gql'
