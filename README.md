@@ -1,3 +1,4 @@
+### I do not maintain this code nor run this script for my server any longer. Use it at your own risk. 
 # twitch_gql_viewer
 capture someone's chatting and get a notification in various ways. 
 ## Usage
