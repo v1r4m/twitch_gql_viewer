@@ -18,3 +18,4 @@ nickname = 샘플닉네임
 ```
 * you can get your gmail key in [here](https://myaccount.google.com/u/1/signinoptions/two-step-verification).
 * change the notification method as you want. 
+* this script is **not** against the robots.txt policy of twitch. Twitch allows every crawling behavior including chat irc websockets.
